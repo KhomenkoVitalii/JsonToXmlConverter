@@ -37,6 +37,14 @@ def complex_node1():
 
 @pytest.fixture
 def complex_node2():
+    input_json = '"{coordinates": {"latitude": 39.0617, "longitude": 64.7887}}'
+    expected_xml = '<coordinates><latitude>39.0617</latitude><longitude>64.7887</longitude></coordinates>'
+    node = Node(input_json)
+    return {"node": node, "json": input_json, "xml": expected_xml}
+
+
+@pytest.fixture
+def complex_node3():
     input_json = '{"authors": {"John": {"works": ["Book1", "Book2"]}, "Jeremy": {"works": ["Book3", "Book4"]}}}'
 
     expected_xml = (
@@ -59,19 +67,6 @@ def complex_node2():
     return {"node": node, "json": input_json, "xml": ''.join(expected_xml)}
 
 
-@pytest.fixture
-def complex_node3():
-    input_json = '"{coordinates": {"latitude": 39.0617, "longitude": 64.7887}}'
-    expected_xml = '<coordinates><latitude>39.0617</latitude><longitude>64.7887</longitude></coordinates>'
-    node = Node(input_json)
-    return {"node": node, "json": input_json, "xml": expected_xml}
-
-
-def test_create_xml_string(simple_node1):
-    res = simple_node1['node'].create_xml_string("username", "Kaley-Wilderman")
-    assert res == simple_node1['xml']
-
-
 def test_serialize_simple_node(simple_node1, simple_node2, simple_node3):
     assert simple_node1['node'].convert_to_xml() == simple_node1['xml']
     assert simple_node2['node'].convert_to_xml() == simple_node2['xml']
@@ -82,19 +77,9 @@ def test_serialize_complex_node_with_array(complex_node1):
     assert complex_node1['node'].convert_to_xml() == complex_node1['xml']
 
 
-@skip
-def test_serialize_complex_node(complex_node2):
+def test_serialize_complex_node_with_objects(complex_node2):
     assert complex_node2['node'].convert_to_xml() == complex_node2['xml']
 
 
-def test_serialize_complex_node_with_objects(complex_node3):
+def test_serialize_complex_node(complex_node3):
     assert complex_node3['node'].convert_to_xml() == complex_node3['xml']
-
-
-# def test_serialize_json_file():
-#     f = open(
-#         '/home/vitalii/Documents/Projects/JsonToXmlConverter/tests/test_json.json', 'r')
-#     json = f.read()
-#     f.close()
-#     open('temp.xml', 'w').write(Node(json).convert_to_xml())
-#     assert False
