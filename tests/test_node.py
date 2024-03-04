@@ -82,4 +82,6 @@ def test_serialize_complex_node_with_objects(complex_node2):
 
 
 def test_serialize_complex_node(complex_node3):
-    assert complex_node3['node'].convert_to_xml() == complex_node3['xml']
+    temp = complex_node3['node'].convert_to_xml()
+    print(temp)
+    assert temp == complex_node3['xml']

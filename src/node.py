@@ -29,27 +29,21 @@ class Node:
 
     def __parse_object(self, parsed_node):
         value = ""
+        temp = parsed_node[1].strip("{}")
 
-        # if nested obj doesn't contain another obj
-        if self.__count_nested_obj(parsed_node[1]) == 1:
-            temp = parsed_node[1].strip("{}")
-            temp = temp.replace("}", "{")
-            temp = temp.replace(", ", "{")
-            complex_node_list = temp.split("{", 1)
-            print(complex_node_list)
-            for i in range(0, len(complex_node_list)):
-                node = complex_node_list[i].strip()
-                if node != "" and len(node.split(': ', 1)) >= 2:
-                    value += self.convert_to_xml(node)
-        else:
-            # temp = parsed_node[1].split(': ')
-            # if len(temp) % 2 == 0:
-            #     for i in range(len(temp)):
-            #         temp_json = temp[i].join(": ").join(temp[i+1])
-            #         temp.pop(i+1)
-            #         value += self.convert_to_xml(temp_json)
-            # else:
-            value += self.convert_to_xml(parsed_node[1])
+        # Split the string into separate key-value pairs
+        nested_objects = [pair.strip() for pair in temp.split('}')]
+
+        for obj in nested_objects:
+            obj_parts = obj.split(': ', 1)
+            if len(obj_parts) == 2:
+                obj_key, obj_value = obj_parts
+                obj_tag_name = obj_key.strip('"}{').strip(', "')
+                if len(obj_value.split(': ')) > 1:
+                    value += self.__create_xml_string(obj_tag_name,
+                                                      self.convert_to_xml(obj_value))
+                else:
+                    value += self.__create_xml_string(obj_tag_name, obj_value)
 
         return value
 
@@ -64,13 +58,6 @@ class Node:
             if node != "":
                 value += self.convert_to_xml(f'"element": {node}')
         return value
-
-    def __count_nested_obj(self, json):
-        num = 0
-        for char in json:
-            if char == '{':
-                num += 1
-        return num
 
     def __create_xml_string(self, tag_name, value):
         return f'<{tag_name}>{value}</{tag_name}>'
