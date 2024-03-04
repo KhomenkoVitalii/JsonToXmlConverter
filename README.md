@@ -1,3 +1,18 @@
+# Instructions
+
+1. Create and activate **venv**.
+2. Install dependencies from requirements.txt or u can simply install pytest
+3. start executing script using 
+```python
+python main.py <specify_path_and_json_name> --root <root_element_name>
+```
+4. *Optional:* To run unit tests run
+```python
+pytest
+```
+
+> **Note!** *Unit tests doesn't compare whole result string with expected one, because of indentation.*
+
 # Task description
 
 We have some json, for example this one:
